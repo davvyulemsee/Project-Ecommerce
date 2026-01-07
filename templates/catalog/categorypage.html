@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ category.capitalize }} — Products{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/categorypage.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container category-page">
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{% url 'storefront:index' %}" class="crumb">Home</a>
+    {% if category %}
+      <span class="crumb-sep">/</span>
+      <a href="{% url 'catalog:all_products'  %}" class="crumb">{{ category.capitalize }}</a>
+    {% endif %}
+    <span class="crumb-sep">/</span>
+    <span class="crumb current" aria-current="page">{{ category.capitalize }}</span>
+  </nav>
+
+  <!-- Header -->
+  <header class="category-header">
+    <div class="header-left">
+      <h1 class="category-title">{{ category.capitalize }}</h1>
+      <p class="category-sub">
+        {% if products.paginator %}
+          Showing {{ products.paginator.count|intcomma }} products
+        {% else %}
+          {{ products|length }} products
+        {% endif %}
+        {% if category.description %} · {{ category.description }}{% endif %}
+      </p>
+    </div>
+
+    <div class="header-right">
+      <form method="get" class="sort-form" aria-label="Sort products">
+        <label for="sort" class="visually-hidden">Sort</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="">Sort</option>
+          <option value="featured" {% if request.GET.sort == 'featured' %}selected{% endif %}>Featured</option>
+          <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: low to high</option>
+          <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: high to low</option>
+          <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest</option>
+        </select>
+      </form>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Optional sidebar for filters (keeps Away-like minimalism) -->
+    <aside class="filters" aria-label="Filters">
+      <div class="filter-block">
+        <h3 class="filter-title">Filters</h3>
+
+        <form method="get" id="filters-form">
+          <!-- Preserve sort if present -->
+          {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+
+          <div class="filter-group">
+            <label class="filter-label">Price</label>
+            <div class="filter-range">
+              <input type="number" name="min_price" placeholder="Min" value="{{ request.GET.min_price|default_if_none:'' }}">
+              <span class="dash">—</span>
+              <input type="number" name="max_price" placeholder="Max" value="{{ request.GET.max_price|default_if_none:'' }}">
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Featured</label>
+            <div>
+              <label class="checkbox">
+                <input type="checkbox" name="featured" value="1" {% if request.GET.featured %}checked{% endif %}>
+                <span>Show featured only</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="submit" class="btn-apply">Apply</button>
+            <a href="{% url 'catalog:all_products'  %}" class="btn-clear">Clear</a>
+          </div>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Product grid -->
+    <section class="products" aria-labelledby="product-grid-heading">
+      <h2 id="product-grid-heading" class="visually-hidden">Products in {{ category.name }}</h2>
+
+      {% if products %}
+        <div class="grid">
+          {% for product in products %}
+            <article class="product-card">
+              <a href="{% url 'catalog:product_page' product.slug %}" class="card-media">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" class="product-img">
+                {% else %}
+                  <div class="product-img placeholder" aria-hidden="true"></div>
+                {% endif %}
+              </a>
+
+              <div class="card-body">
+                <a href="/" class="product-name">{{ product.name }}</a>
+                <div class="product-meta">
+                  <span class="price">${{ product.price }}</span>
+                  {% if product.featured %}
+                    <span class="badge">Featured</span>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination (if products is a paginator page) -->
+        {% if products.has_other_pages %}
+          <nav class="pagination" role="navigation" aria-label="Pagination">
+            {% if products.has_previous %}
+              <a href="?page={{ products.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link prev">Previous</a>
+            {% else %}
+              <span class="page-link prev disabled">Previous</span>
+            {% endif %}
+
+            <span class="pages">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+            {% if products.has_next %}
+              <a href="?page={{ products.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link next">Next</a>
+            {% else %}
+              <span class="page-link next disabled">Next</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="empty-state">
+          <p>No products found in this category.</p>
+          <a href="{% url 'storefront:index' %}" class="btn-ghost">Browse all products</a>
+        </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  // Basic UX: keep filter form compact and submit on Enter/Apply.
+  (function () {
+    const filtersForm = document.getElementById('filters-form');
+    if (!filtersForm) return;
+    filtersForm.addEventListener('submit', function () {
+      // form submits normally; you can add custom validation here if needed
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+<!-- templates/layout.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Away Clone{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <a href="{% url 'storefront:index' %}" class="brand-link">
+          <img src="{% static 'images/icons/logo1.png' %}" alt="Brand logo" class="brand-logo">
+        </a>
+      </div>
+
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="{% url 'storefront:index' %}">Home</a></li>
+          <li><a href="{% url 'catalog:all_products' %}?category=luggage">Luggage</a></li>
+          <li><a href="{% url 'catalog:all_products' %}?category=bags">Bags</a></li>
+          <li><a href="{% url 'catalog:all_products' %}?category=accessories">Accessories</a></li>
+          <li><a href="/">About</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <form class="search" action="/" method="get" role="search">
+          <label for="q" class="visually-hidden">Search</label>
+          <input id="q" name="q" placeholder="Search products" type="search" value="{{ request.GET.q|default:'' }}">
+        </form>
+
+<!--        <a href="/" class="cart" aria-label="View cart">-->
+<!--          <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h-2l-1 2h2l2.6 8.6c.1.4.5.7.9.7h7v-2h-6.6l-.4-1.4h7.4c.6 0 1-.4 1-1l1-6H8.1"></path></svg>-->
+<!--          <span class="cart-count">{{ cart.items_count|default:0 }}</span>-->
+<!--        </a>-->
+        <a href="{% url 'cart:cart' %}" class="cart-button">
+  <img src="{% static 'images/icons/cart.png' %}" alt="Cart" width="24" height="24">
+</a>
+        <a href="{% url 'catalog:create_product' %}" class="cart-button">
+  <img src="{% static 'images/icons/plus.png' %}" alt="Add" width="24" height="24">
+</a>
+
+<button class="btn-signin">Sign in</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="/">Luggage</a></li>
+          <li><a href="/">Bags</a></li>
+          <li><a href="/">Accessories</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/">About</a></li>
+          <li><a href="/">Careers</a></li>
+          <li><a href="/">Press</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/">Help Center</a></li>
+          <li><a href="/">Returns</a></li>
+          <li><a href="/">Shipping</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col newsletter">
+        <h4>Get updates</h4>
+        <p>Join our newsletter for product drops and business tips.</p>
+        <form action="/" method="post">
+          {% csrf_token %}
+          <label for="newsletter-email" class="visually-hidden">Email</label>
+          <input id="newsletter-email" name="email" type="email" placeholder="Email address" required>
+          <button type="submit" class="btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+                <img src="{% static 'images/icons/logo1.png' %}" alt="Brand logo" class="brand-logo">
+
+      <small>&copy; {{ now.year }} AwayClone. All rights reserved.</small>
+      <a href="/">Terms</a>
+        <a href="/">Privacy</a>
+    </div>
+  </footer>
+
+  <div id="chat-icon" aria-label="Open chat" role="button" tabindex="0" title="Chat">
+    <svg viewBox="0 0 24 24" class="chat-svg" aria-hidden="true"><path d="M12 3C7 3 3 6.5 3 11c0 2.1.9 4 2.5 5.3L5 21l4-1.9c.9.2 1.9.3 3 .3 5 0 9-3.5 9-8s-4-8-9-8z"/></svg>
+  </div>
+
+  {% block extra_body %}{% endblock %}
+<div id="chatbot-window" class="chatbot hidden">
+  <div class="chatbot-header">Travel Assistant</div>
+  <div class="chatbot-body" id="chatbot-body">
+    <div class="chatbot-message bot">Hi there! How can I help you today?</div>
+  </div>
+  <form id="chatbot-form">
+    <input type="text" id="chatbot-input" placeholder="Type your question..." autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+  const chatIcon = document.getElementById('chat-icon');
+  const chatbot = document.getElementById('chatbot-window');
+  const form = document.getElementById('chatbot-form');
+  const input = document.getElementById('chatbot-input');
+  const body = document.getElementById('chatbot-body');
+
+  chatIcon.addEventListener('click', () => {
+    chatbot.classList.toggle('hidden');
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chatbot-message user';
+    userBubble.textContent = userMsg;
+    body.appendChild(userBubble);
+
+    input.value = '';
+
+    // Simulated bot response
+    setTimeout(() => {
+      const botBubble = document.createElement('div');
+      botBubble.className = 'chatbot-message bot';
+      botBubble.textContent = "Thanks for your message! We'll get back to you shortly.";
+      body.appendChild(botBubble);
+      body.scrollTop = body.scrollHeight;
+    }, 600);
+  });
+
+// static/js/cart.js
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('form.add-to-cart-form[data-ajax="true"]').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var url = form.action;
+      var data = new FormData(form);
+      fetch(url, {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        body: data,
+        credentials: 'same-origin'
+      }).then(function (res) { return res.json(); })
+        .then(function (json) {
+          // update header badge if present
+          var badge = document.querySelector('.cart-badge');
+          if (badge) badge.textContent = json.items_count;
+          // optionally show a small toast using your site's UI
+          console.log('Cart updated', json);
+        }).catch(function (err) {
+          console.error('Add to cart failed', err);
+          // fall back to normal submit if desired
+          form.submit();
+        });
+    });
+  });
+});
+
+</script>
+</body>
+</html>

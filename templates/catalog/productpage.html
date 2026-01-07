@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block title %}{{ product.name }} — Product{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/productpage.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="product-page">
+  <div class="page-inner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="{% url 'storefront:index' %}" class="crumb">Home</a>
+      <span class="crumb-sep">/</span>
+      <a href="{% url 'catalog:all_products' %}" class="crumb">Products</a>
+      {% if category %}
+        <span class="crumb-sep">/</span>
+        <a href="{% url 'catalog:all_products' %}?category={{ category.slug }}" class="crumb">{{ category.name }}</a>
+      {% endif %}
+      <span class="crumb-sep">/</span>
+      <span class="crumb current" aria-current="page">{{ product.name }}</span>
+    </nav>
+
+    <div class="product-layout">
+      <section class="media-column" aria-labelledby="media-heading">
+        <h2 id="media-heading" class="visually-hidden">Product images</h2>
+
+        <div class="hero-wrap">
+          {% if product.image %}
+            <img id="hero-image" src="{{ product.image.url }}" alt="{{ product.name }}" class="hero-img" loading="lazy">
+            <a href="{{ product.image.url }}" target="_blank" rel="noopener" class="zoom-btn" aria-label="Open image">⤢</a>
+          {% else %}
+            <div class="hero-placeholder" aria-hidden="true"></div>
+          {% endif %}
+        </div>
+      </section>
+
+      <aside class="details-column" aria-labelledby="details-heading">
+        <h2 id="details-heading" class="product-title">{{ product.name }}</h2>
+
+        <div class="meta-row">
+          <div class="price-row">
+            <span class="price">${{ product.price }}</span>
+            {% if product.featured %}
+              <span class="badge">Featured</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <form method="post" action="{% url 'cart:add' product.pk %}" class="add-form add-to-cart-form"  data-ajax="true">
+          {% csrf_token %}
+          <label for="qty" class="visually-hidden">Quantity</label>
+          <select id="qty" name="quantity" class="qty-select" aria-label="Quantity">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+
+          <div class="actions-row">
+            <button type="submit" class="btn btn-primary add-to-cart">Add to cart</button>
+            <button type="button" class="btn btn-ghost wishlist">Add to wishlist</button>
+          </div>
+        </form>
+
+        <div class="details-panel">
+          <h3 class="section-title">Product details</h3>
+          <div class="info-body">
+            <p>{{ product.description|linebreaks }}</p>
+          </div>
+          <div class="shipping-note">
+            <strong>Shipping</strong>: Free over $50 · Ships in 1–3 business days
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  (function () {
+    const hero = document.getElementById('hero-image');
+    // No thumbnails available in this model; keep zoom link only.
+    // Zoom link opens the image in a new tab (anchor with target="_blank").
+    // Basic accessibility: focus hero on load.
+    if (hero) hero.setAttribute('role', 'img');
+  })();
+</script>
+{% endblock %}

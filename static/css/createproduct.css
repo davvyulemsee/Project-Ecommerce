@@ -1,0 +1,85 @@
+:root {
+  --primary: #cc5500;
+  --primary-hover: #e66b00;
+  --muted: #6b6b6b;
+  --bg: #fff8f2;
+  --radius: 12px;
+  --max-width: 720px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+body {
+  background: var(--bg);
+  font-family: Inter, system-ui, sans-serif;
+  color: #222;
+}
+
+.product-form-container {
+  max-width: var(--max-width);
+  margin: 60px auto;
+  padding: 0 24px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.product-form-container h2 {
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+  color: #111;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+  padding: 12px 14px;
+  border: 1px solid #e0d6d0;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(204, 85, 0, 0.12);
+}
+
+.btn-orange {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-orange:hover {
+  background: var(--primary-hover);
+}

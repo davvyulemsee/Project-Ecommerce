@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block title %}{{ product.name }} — Product{% endblock %}
+
+
+
+{% block content %}
+
+<header class="site-header site-header--simple">
+  <div class="container header-inner">
+    <a class="brand" href="{% url 'storefront:index' %}">Brand</a>
+    <nav class="header-actions">
+      <a class="link" href="/">Shop</a>
+      <a class="link" href="/">Help</a>
+      <a class="cart-icon" href="{% url 'cart:cart' %}">Cart <span class="cart-badge">{{ items|length }}</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="container cart-page">
+  <h1 class="page-title">Your cart</h1>
+
+  <div class="cart-grid">
+    <section class="cart-items" aria-labelledby="cart-items-heading">
+      <h2 id="cart-items-heading" class="visually-hidden">Cart items</h2>
+
+      {% if items %}
+        {% for it in items %}
+        <article class="cart-row" data-product-id="{{ it.product_id }}">
+          <div class="cart-media">
+  {% if it.image_url %}
+    <img src="{{ it.image_url }}" alt="{{ it.name }}" class="cart-thumb">
+  {% else %}
+    <div class="cart-thumb placeholder" aria-hidden="true"></div>
+  {% endif %}
+</div>
+
+
+          <div class="cart-body">
+            <div class="cart-meta">
+              <div class="product-name">{{ it.name }}</div>
+              {% if it.variant %}<div class="product-variant">{{ it.variant }}</div>{% endif %}
+              <div class="product-sku">ID: {{ it.product_id }}</div>
+            </div>
+
+            <div class="cart-controls">
+              <div class="price">{{ it.unit_price }}</div>
+
+              <form class="qty-form" method="post" action="{% url 'cart:update' it.product_id %}">
+                {% csrf_token %}
+                <button class="btn btn-ghost" type="submit" aria-label="Update quantity">Update</button>
+              </form>
+
+              <form method="post" action="{% url 'cart:remove' it.product_id %}" style="margin-left:12px">
+                {% csrf_token %}
+                <button class="remove-btn" type="submit" aria-label="Remove {{ it.name }}">Remove</button>
+              </form>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+
+        <div class="cart-actions-row">
+          <a class="link-continue" href="{% url 'storefront:index' %}">Continue shopping</a>
+        </div>
+      {% else %}
+        <div class="cart-empty">
+          <p>Your cart is empty.</p>
+          <a class="btn btn-primary" href="{% url 'storefront:index' %}">Shop now</a>
+        </div>
+      {% endif %}
+    </section>
+
+    <aside class="cart-summary" aria-labelledby="summary-heading">
+
+
+      <div class="summary-card">
+        <h2 id="summary-heading" class="summary-title">Summary</h2>
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span class="summary-value">{{ subtotal }}</span>
+        </div>
+
+        <div class="summary-line">
+          <span>Shipping</span>
+          <span class="summary-value">Calculated at checkout</span>
+        </div>
+
+        <div class="summary-line">
+          <span>Taxes</span>
+          <span class="summary-value">—</span>
+        </div>
+
+        <div class="summary-line total">
+          <span>Estimated total</span>
+          <span class="summary-value total-value">{{ subtotal }}</span>
+        </div>
+
+        <form method="post" action="{% url 'cart:checkout' %}" class="checkout-form">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-full">Checkout</button>
+        </form>
+
+        <p class="checkout-note">Secure checkout · Free returns · Ships from US</p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+{% endblock %}

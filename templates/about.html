@@ -1,0 +1,202 @@
+<!-- templates/about.html -->
+{% extends "layout.html" %}
+{% load static %}
+{% block title %}About - AwayClone{% endblock %}
+
+{% block content %}
+<main class="about-page">
+
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container about-hero-inner">
+      <div class="about-hero-copy">
+        <h1>Built for teams that move</h1>
+        <p class="lead">
+          AwayClone creates durable, functional travel gear designed to help small teams and
+          businesses travel smarter. We focus on quality, simple design, and service that scales
+          with your company.
+        </p>
+        <p>
+          Our products are engineered to last, backed by clear warranties and business-friendly
+          policies for bulk orders and consistent support.
+        </p>
+      </div>
+
+      <div class="about-hero-media">
+        <picture>
+          <source media="(max-width:560px)" srcset="{% static 'images/hero-1-mobile.jpg' %}">
+          <img src="{% static 'images/hero-1.jpg' %}" alt="Business travel essentials">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission and Values -->
+  <section class="about-mission container">
+    <h2>Mission and values</h2>
+
+    <div class="grid-three">
+      <div class="value">
+        <h3>Thoughtful design</h3>
+        <p>We make purposeful travel essentials that solve real problems, not just look good. Each
+          product is built with function-first engineering, clean aesthetics, and predictable
+          performance.</p>
+      </div>
+
+      <div class="value">
+        <h3>Reliability</h3>
+        <p>Business travel is unforgiving. We design for durability, simple repairs, and clear
+          warranties so teams can focus on work, not gear breakdowns.</p>
+      </div>
+
+      <div class="value">
+        <h3>Transparent business terms</h3>
+        <p>We offer straightforward pricing, bulk discounts, and dedicated support for company
+          accounts so procurement is simple and repeatable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline / Company Story -->
+  <section class="about-story container">
+    <h2>Our story</h2>
+    <ol class="timeline">
+      <li>
+        <h4>Founded</h4>
+        <p>We started with a single carry-on prototype and a simple idea: travel gear should be
+          smart, durable, and made for real journeys.</p>
+      </li>
+      <li>
+        <h4>First collection</h4>
+        <p>Launched our first range focusing on durability and function—tested by frequent travelers
+          and refined with real-world feedback.</p>
+      </li>
+      <li>
+        <h4>Business features</h4>
+        <p>Added team accounts, bulk ordering, and dedicated support to help small businesses scale
+          travel operations.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Team -->
+  <section class="about-team container">
+    <h2>Team</h2>
+    <p>We’re a small multidisciplinary team of product designers, engineers, and customer operators
+      who care deeply about the details that make travel easier for companies.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="{% static 'images/testimonial-1.jpg' %}" alt="Maya K" width="200" height="200">
+        <h4>Maya K</h4>
+        <p>Head of Operations</p>
+      </div>
+
+      <div class="team-card">
+        <img src="{% static 'images/testimonial-2.jpg' %}" alt="David L" width="200" height="200">
+        <h4>David L</h4>
+        <p>Founder</p>
+      </div>
+
+      <div class="team-card">
+        <img src="{% static 'images/testimonial-3.jpg' %}" alt="Priya S" width="200" height="200">
+        <h4>Priya S</h4>
+        <p>Product Lead</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sustainability and Materials -->
+  <section class="about-sustainability container">
+    <h2>Sustainability and materials</h2>
+    <p>We prioritize long-lived materials and responsible manufacturing. Where possible we select
+      recycled fabrics, reduce unnecessary packaging, and optimize logistics to lower our carbon
+      footprint. For transparency, we publish material and repair information for each product.</p>
+
+    <ul class="sustainability-list">
+      <li><strong>Recycled fabrics:</strong> Select styles use post-consumer recycled polyester.</li>
+      <li><strong>Repairable parts:</strong> Replaceable wheels, handles, and interior components.</li>
+      <li><strong>Minimal packaging:</strong> Recyclable boxes and reduced plastic where possible.</li>
+    </ul>
+  </section>
+
+  <!-- For Businesses / Wholesale -->
+  <section class="about-business container">
+    <h2>For businesses</h2>
+    <p>We support small and growing teams with:</p>
+
+    <div class="grid-two">
+      <div>
+        <h4>Team accounts</h4>
+        <p>Manage company orders, shipping addresses, and billing in one place.</p>
+      </div>
+      <div>
+        <h4>Bulk pricing</h4>
+        <p>Transparent discounts starting at small volume thresholds, with clear lead times.</p>
+      </div>
+      <div>
+        <h4>Custom branding</h4>
+        <p>Logo embossing and limited customization available for qualifying orders.</p>
+      </div>
+      <div>
+        <h4>Dedicated support</h4>
+        <p>Priority fulfillment and account management for recurring orders.</p>
+      </div>
+    </div>
+
+    <p class="cta-row">
+      <a class="btn-primary" href="{% url 'contact' %}">Contact sales</a>
+      <a class="btn-secondary" href="{% url 'category' 'luggage' %}">Shop collections</a>
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="about-faq container">
+    <h2>Frequently asked questions</h2>
+
+    <div class="faq-item">
+      <h4>Do you offer bulk discounts?</h4>
+      <p>Yes. Bulk pricing and business accounts are available. Contact sales for custom quotes and
+        lead times.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>What is your returns policy?</h4>
+      <p>We offer a 30-day return window on unused items. Damaged items are handled under warranty;
+        please contact support for details.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>How long does shipping take?</h4>
+      <p>Standard shipping is 3–7 business days depending on destination. Business orders may have
+        longer lead times depending on quantity and customization.</p>
+    </div>
+  </section>
+
+  <!-- Contact / Careers / Press links -->
+  <section class="about-cta container">
+    <div class="cta-grid">
+      <div class="cta-card">
+        <h3>Join our team</h3>
+        <p>We publish open roles and internships periodically. If you’re excited about product and
+          systems that support travel for business, check our careers page.</p>
+        <p><a class="btn-secondary" href="{% url 'careers' %}">See open roles</a></p>
+      </div>
+
+      <div class="cta-card">
+        <h3>Press & partnerships</h3>
+        <p>For press inquiries, partnerships, or wholesale distribution, reach out through our press
+          contact form.</p>
+        <p><a class="btn-secondary" href="{% url 'press' %}">Press inquiries</a></p>
+      </div>
+
+      <div class="cta-card">
+        <h3>Contact support</h3>
+        <p>Need help with an order, bulk request, or warranty? Our team is ready to assist.</p>
+        <p><a class="btn-primary" href="{% url 'contact' %}">Contact support</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+{% endblock %}

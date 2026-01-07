@@ -1,0 +1,228 @@
+<!-- templates/home.html -->
+{% extends 'layout.html' %}
+{% block title %}Home - AwayClone{% endblock %}
+{% block content %}
+{% load static %}
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <h1 class="hero-title">Travel essentials for modern small businesses</h1>
+      <p class="hero-sub">Durable luggage, reliable accessories, and business-ready solutions built for teams on the move.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="/">Shop Luggage</a>
+        <a class="btn-secondary" href="/">Explore Accessories</a>
+      </div>
+
+      <ul class="hero-highlights">
+        <li><strong>Free shipping</strong> on orders over $100</li>
+        <li><strong>30-day returns</strong> for hassle-free exchanges</li>
+        <li><strong>Team discounts</strong> available</li>
+      </ul>
+    </div>
+
+    <div class="hero-media">
+            <!-- here it is -->
+<picture class="hero-picture">
+  <source media="(max-width:560px)" srcset="{% static 'images/hero-1-mobile.jpg' %}">
+  <img
+    src="{% static 'images/hero-2.jpg' %}"
+    alt="Business travel essentials"
+    class="hero-image"
+    loading="eager"
+    width="1600"
+    height="900"
+  ><img src="../../../../AppData/Local/Temp/pexels-tomas-gal-211661-678582.jpg" height="4000" width="5000"/>
+</picture>
+
+
+<!--      <div class="img-placeholder" aria-hidden="true">Image</div>-->
+<!--    </div>-->
+  </div>
+</section>
+
+<!-- Featured Collections -->
+<section class="collections">
+  <div class="container">
+    <h2 class="section-title">Collections</h2>
+    <div class="collections-grid">
+      <a class="collection-card" href="/">
+        <div class="collection-media placeholder">
+              <picture class="collection-picture">
+      <source media="(max-width:560px)" srcset="{% static 'images/categories/luggage-card-mobile.jpg' %}">
+      <img src="{% static 'images/categories/luggage-card2.jpg' %}"
+           alt="Luggage collection"
+           class="collection-image"
+           loading="lazy"
+           width="1200"
+           height="800">
+    </picture>
+
+        </div>
+        <div class="collection-body">
+          <h3>Smart Luggage</h3>
+          <p>Lightweight, durable, and engineered for business travel.</p>
+        </div>
+      </a>
+
+      <a class="collection-card" href="/">
+        <div class="collection-media placeholder">
+          <picture class="collection-picture">
+      <source media="(max-width:560px)" srcset="{% static 'images/categories/luggage-card-mobile.jpg' %}">
+      <img src="{% static 'images/categories/carry-card.jpg' %}"
+           alt="Luggage collection"
+           class="collection-image"
+           loading="lazy"
+           width="1200"
+           height="800">
+    </picture>
+        </div>
+        <div class="collection-body">
+          <h3>Carry Bags</h3>
+          <p>Work-friendly backpacks and briefcases designed for productivity.</p>
+        </div>
+      </a>
+
+      <a class="collection-card" href="/">
+        <div class="collection-media placeholder">
+          <picture class="collection-picture">
+      <source media="(max-width:560px)" srcset="{% static 'images/categories/luggage-card-mobile.jpg' %}">
+      <img src="{% static 'images/categories/accessories.jpg' %}"
+           alt="Luggage collection"
+           class="collection-image"
+           loading="lazy"
+           width="1200"
+           height="800">
+    </picture>
+        </div>
+        <div class="collection-body">
+          <h3>Accessories</h3>
+          <p>Chargers, organizers, and small goods to keep teams moving.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="how-it-works">
+  <div class="container how-layout">
+    <div class="how-tiles">
+      <article class="how-tile">
+        <div class="how-step">1</div>
+        <div class="how-info">
+          <h4>Pick your gear</h4>
+          <p>Choose from curated collections ideal for small-business travel.</p>
+        </div>
+      </article>
+
+      <article class="how-tile">
+        <div class="how-step">2</div>
+        <div class="how-info">
+          <h4>Customize for your team</h4>
+          <p>Bulk orders, team branding, and checkout options for companies.</p>
+        </div>
+      </article>
+
+      <article class="how-tile">
+        <div class="how-step">3</div>
+        <div class="how-info">
+          <h4>Ship and support</h4>
+          <p>Fast fulfillment and business-ready customer support.</p>
+        </div>
+      </article>
+    </div>
+
+    <figure class="how-hero">
+      <picture>
+        <source media="(max-width:560px)" srcset="{% static 'images/how-hero-mobile.jpg' %}">
+        <img src="{% static 'images/travel.jpg' %}" alt="How it works visual" loading="lazy" width="1600" height="1200">
+      </picture>
+    </figure>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<!-- Featured Products -->
+<section class="featured-products">
+  <div class="container">
+    <h2 class="section-title">Featured products</h2>
+
+    <div class="product-grid">
+      <article class="product-card">
+        <a href="/" class="product-link">
+          <div class="product-media">
+            <img src="{% static 'images/products/luggage.jpg' %}" alt="Transport Lite Carry-On" loading="lazy" width="1600" height="1000">
+          </div>
+          <div class="product-body">
+            <h3 class="product-title">Transport Lite Carry-On</h3>
+            <p class="product-meta">Expandable shell · 4-wheel · 8 colors</p>
+            <div class="product-foot">
+              <span class="product-price">$235</span>
+              <span class="btn-secondary">View</span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <article class="product-card">
+        <a href="/" class="product-link">
+          <div class="product-media">
+            <img src="{% static 'images/products/backpack.jpg' %}" alt="Baggage Pro Roller" loading="lazy" width="1600" height="1000">
+          </div>
+          <div class="product-body">
+            <h3 class="product-title">Baggage Pro Roller</h3>
+            <p class="product-meta">Hardshell durability · 2-year warranty</p>
+            <div class="product-foot">
+              <span class="product-price">$310</span>
+              <span class="btn-secondary">View</span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <article class="product-card">
+        <a href="/" class="product-link">
+          <div class="product-media">
+            <img src="{% static 'images/products/carryon.jpg' %}" alt="Team Pack Backpack" loading="lazy" width="1600" height="1000">
+          </div>
+          <div class="product-body">
+            <h3 class="product-title">Team Pack Backpack</h3>
+            <p class="product-meta">Laptop sleeve · Organizational pockets</p>
+            <div class="product-foot">
+              <span class="product-price">$145</span>
+              <span class="btn-secondary">View</span>
+            </div>
+          </div>
+        </a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<!--<section class="testimonials">-->
+<!--  <div class="container">-->
+<!--    <h2 class="section-title">Trusted by teams</h2>-->
+<!--    <div class="testimonials-grid">-->
+<!--      <blockquote class="testimonial">-->
+<!--        <p>"Our travel setup for the sales team improved overnight."</p>-->
+<!--        <cite>— Maya K, Operations</cite>-->
+<!--      </blockquote>-->
+<!--      <blockquote class="testimonial">-->
+<!--        <p>"Sturdy luggage that stands up to frequent travel."</p>-->
+<!--        <cite>— David L, Founder</cite>-->
+<!--      </blockquote>-->
+<!--      <blockquote class="testimonial">-->
+<!--        <p>"Great support on bulk orders and shipping."</p>-->
+<!--        <cite>— Priya S, Office Manager</cite>-->
+<!--      </blockquote>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+<!-- Newsletter Bar -->
+
+
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<nav class="nav" role="navigation" aria-label="Top navigation">
+  <a class="brand" href="{% url 'storefront:index' %}">
+    <span class="logo">AT</span>
+    <div>
+      <h1>Atlas Travel</h1>
+      <div class="small-muted">Pack light. Travel far.</div>
+    </div>
+  </a>
+
+  <div class="nav-actions">
+    <a class="cart-link" href="{% url 'cart:cart' %}">
+      Cart
+      <span id="cart-badge" class="cart-badge">{{items|default:0 }}</span>
+    </a>
+  </div>
+</nav>
+
+<main class="wrap" role="main">
+  <section class="card" aria-labelledby="checkout-title">
+    <div class="section-title">
+      <h2 id="checkout-title">Checkout</h2>
+      <div class="small-muted">Secure checkout · 256‑bit encrypted</div>
+    </div>
+
+    <div class="progress-row" aria-hidden="true">
+      <div style="min-width:84px;font-size:13px;color:var(--muted)">Progress</div>
+      <div class="progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress_percent|default:0 }}">
+        <span style="width:{{ progress_percent|default:0 }}%"></span>
+      </div>
+      <div class="progress-note">{{ progress_percent|default:0 }}% complete</div>
+    </div>
+
+    <form id="checkout-form" method="post" action="">
+      {% csrf_token %}
+      <div class="section-title"><h2>Shipping</h2></div>
+
+      <div class="row">
+        <div>
+          <label for="first_name">First name</label>
+          <input id="first_name" name="first_name" type="text" placeholder="Amina" value="{{ user.first_name }}" required />
+        </div>
+        <div>
+          <label for="last_name">Last name</label>
+          <input id="last_name" name="last_name" type="text" placeholder="Mwangi" value="{{ user.last_name }}" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@domain.com" value="{{ user.email }}" required />
+        </div>
+        <div>
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" type="tel" placeholder="2547XXXXXXXX" value="{{ profile.phone }}" required />
+        </div>
+      </div>
+
+      <div class="row single">
+        <div>
+          <label for="address">Address</label>
+          <input id="address" name="address" type="text" placeholder="Street, building, city" value="{{ shipping.address }}" required />
+        </div>
+      </div>
+
+      <div class="section-title"><h2>Payment</h2></div>
+
+      <div class="methods" role="radiogroup" aria-label="Payment methods">
+        <label class="method" for="pm-mpesa">
+          <input id="pm-mpesa" type="radio" name="payment_method" value="mpesa" checked />
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:600">M‑Pesa</div>
+              <div class="small-muted">Secure mobile checkout</div>
+            </div>
+            <div class="meta">STK Push to your phone; no card required.</div>
+          </div>
+        </label>
+
+        <label class="method" for="pm-card">
+          <input id="pm-card" type="radio" name="payment_method" value="card" />
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:600">Card — Visa / Mastercard</div>
+              <div class="small-muted">Powered by your gateway</div>
+            </div>
+            <div class="meta">Enter card on next step (tokenized).</div>
+          </div>
+        </label>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px">
+        <button type="button" class="btn" id="pay-btn">Confirm & Pay</button>
+        <a class="btn secondary" href="{% url 'cart:cart' %}">Edit cart</a>
+      </div>
+
+      <div class="muted-note">By completing this you agree to the terms and our refund policy.</div>
+    </form>
+  </section>
+
+  <aside class="summary" aria-labelledby="summary-title">
+    <h3 id="summary-title">Order summary</h3>
+
+    <div class="items">
+      {% for item in cart.items %}
+      <div class="item">
+        <div class="thumb">
+          {% if item.product.thumbnail_url %}
+            <img src="{{ item.product.thumbnail_url }}" alt="{{ item.product.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px" />
+          {% else %}
+            {{ item.product.name|slice:":1"|upper }}
+          {% endif %}
+        </div>
+        <div class="meta">
+          <b>{{ item.product.name }}</b>
+          <div class="small-muted">{{ item.variant_display }}</div>
+        </div>
+        <div class="price">{{ item.line_total }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="row"><div class="small-muted">Items</div><div class="small-muted">{{ items }}</div></div>
+    <div class="row"><div class="small-muted">Shipping</div><div class="small-muted">{{ shipping.cost }}</div></div>
+    <div class="row"><div class="small-muted">Discount</div><div class="small-muted">— {{ cart|default:0 }}</div></div>
+
+    <div class="total"><div>Total</div><div>{{ subtotal }}</div></div>
+
+    <div style="margin-top:14px">
+      <button class="btn" id="pay-btn-2">Pay {{ subtotal }}</button>
+    </div>
+  </aside>
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/csrf.js' %}"></script>
+<script>
+  // Minimal JS hooks to wire to your endpoints
+  function setBadge(count){
+    const el = document.getElementById('cart-badge');
+    if(!el) return;
+    el.textContent = count;
+  }
+
+  async function initiatePayment(payload){
+    // POST to your server endpoint that starts STK Push or card flow
+    const resp = await fetch("{% url 'payments:initiate' %}", {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'X-CSRFToken': csrftoken()},
+      body: JSON.stringify(payload)
+    });
+    return resp.json();
+  }
+
+  document.getElementById('pay-btn').addEventListener('click', async function(){
+    const phone = document.getElementById('phone').value;
+    const orderPayload = {
+      order_id: "{{ order.id }}",
+      phone: phone,
+      amount: "{{ cart.total_amount }}"
+    };
+    const res = await initiatePayment(orderPayload);
+    // handle response: show waiting UI, poll status, update badge on success, etc.
+    console.log(res);
+  });
+
+  // Sync badge on load (server-rendered initial value used as fallback)
+  (function(){ setBadge({{ cart.total_items|default:0 }}) })();
+</script>
+{% endblock %}
