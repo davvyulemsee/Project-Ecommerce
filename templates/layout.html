@@ -123,37 +123,108 @@
 </div>
 
 <script>
-  const chatIcon = document.getElementById('chat-icon');
-  const chatbot = document.getElementById('chatbot-window');
-  const form = document.getElementById('chatbot-form');
-  const input = document.getElementById('chatbot-input');
-  const body = document.getElementById('chatbot-body');
+const chatIcon = document.getElementById('chat-icon');
+const chatbot  = document.getElementById('chatbot-window');
+const form     = document.getElementById('chatbot-form');
+const input    = document.getElementById('chatbot-input');
+const body     = document.getElementById('chatbot-body');
 
-  chatIcon.addEventListener('click', () => {
+let currentThreadId = null;
+
+function addMessage(text, isUser = false) {
+    const div = document.createElement('div');
+    div.className = `chatbot-message ${isUser ? 'user' : 'bot'}`;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+}
+
+// Toggle chat window visibility
+chatIcon.addEventListener('click', () => {
     chatbot.classList.toggle('hidden');
-  });
+});
 
-  form.addEventListener('submit', (e) => {
+function createBotBubble(text){
+    const bubble = document.createElement('div');
+    bubble.className = 'chatbot-message bot';
+    bubble.textContent = text;
+    return bubble;
+}
+
+// Handle form submission (only one listener!)
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const userMsg = input.value.trim();
     if (!userMsg) return;
 
-    const userBubble = document.createElement('div');
-    userBubble.className = 'chatbot-message user';
-    userBubble.textContent = userMsg;
-    body.appendChild(userBubble);
-
+    // Show user message
+    addMessage(userMsg, true);
     input.value = '';
+    input.disabled = true;
 
-    // Simulated bot response
-    setTimeout(() => {
-      const botBubble = document.createElement('div');
-      botBubble.className = 'chatbot-message bot';
-      botBubble.textContent = "Thanks for your message! We'll get back to you shortly.";
-      body.appendChild(botBubble);
-      body.scrollTop = body.scrollHeight;
-    }, 600);
-  });
+    // Show "thinking..." bubble
+    const thinking = document.createElement('div');
+    thinking.className = 'chatbot-message bot thinking';
+    thinking.textContent = '…';
+    body.appendChild(thinking);
+    body.scrollTop = body.scrollHeight;
+
+    try {
+        const response = await fetch('http://localhost:8123/agent/invoke', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                input: {
+                    messages: [
+                        {
+                            type: 'human',
+                            content: userMsg,
+                        }
+                    ]
+                },
+                config: {
+                    configurable: {
+                        thread_id: currentThreadId || `session-${Date.now()}`
+                    }
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        if (!response.body) {
+            throw new Error("No readable stream from server");
+        }
+
+
+        const json = await response.json();
+        const finalMessage = json.output.messages[json.output.messages.length -1].content;
+
+
+        body.replaceChild(
+            createBotBubble(finalMessage),
+            thinking
+        );
+        body.scrollTop = body.scrollHeight;
+
+
+        // Remember thread id for the next message
+        if (!currentThreadId) {
+            currentThreadId = `session-${Date.now()}`;
+        }
+
+    } catch (err) {
+        console.error('Chat error:', err);
+        // Replace thinking bubble with error message
+        addMessage("Sorry, something went wrong 😕 Please try again.");
+        body.removeChild(thinking); // clean up if still there
+    } finally {
+        input.disabled = false;
+        input.focus();
+    }
+});
 
 // static/js/cart.js
 document.addEventListener('DOMContentLoaded', function () {

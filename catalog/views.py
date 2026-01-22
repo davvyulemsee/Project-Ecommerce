@@ -59,28 +59,29 @@ def product_list_api(request):
     return JsonResponse({'products':data})
 
 @api_view(['GET'])
+# @permission_classes([AllowAny])
 def search_product(request):
+    queryset = Product.objects.all()
     query = request.GET.get('q', '').strip()
 
     if not query:
         return Response({"error": "Please provide search terms with q="}, status = 400)
 
-    products = Product.objects.all()
 
-    products = products.filter(
+    queryset = queryset.filter(
         Q(name__icontains=query) | Q(description__icontains=query) | Q(category__icontains=query)
     )
 
     category = request.GET.get('category')
     if category:
-        products = products.filter(category__name__icontains=category)
+        queryset = queryset.filter(category__icontains=category)
 
     limit = request.GET.get("limit", 5)
-    products = products[:limit]
+    products = queryset[:int(limit)]
 
     serializer = ProductSerializer(products, many=True)
 
     return Response({
         "length":len(serializer.data),
         "Content": serializer.data
-    })
+    }, content_type='application/json')
