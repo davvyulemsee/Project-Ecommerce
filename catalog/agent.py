@@ -16,15 +16,34 @@ from langgraph.prebuilt import ToolNode
 import chainlit as cl
 from pydantic import Field
 import requests
+from pathlib import Path
 
 # load_dotenv()
 
 # load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 
-load_dotenv(r"C:\Users\Santan\PycharmProjects\PythonProject\project1\.env")
+# load_dotenv(r"C:\Users\Santan\PycharmProjects\PythonProject\project1\.env")
+# load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
+#
+#
+# groq_api_key = os.getenv("GROQ_API_KEY")
+#
+#
+# model = ChatGroq(model="openai/gpt-oss-20b", temperature = 0, api_key=groq_api_key)
 
-model = ChatGroq(model="openai/gpt-oss-20b", temperature = 0, api_key="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")
+BASE_DIR = Path(__file__).resolve().parent
+env_path = BASE_DIR / '.env'
+if not env_path.is_file():
+    env_path = BASE_DIR.parent / '.env'
+
+load_dotenv(env_path)
+
+groq_api_key = os.getenv("GROQ_API_KEY")
+if not groq_api_key:
+    raise ValueError("No GROQ_API_KEY! Check .env path.")
+
+model = ChatGroq(model="openai/gpt-oss-20b", temperature=0, api_key=groq_api_key)
 
 API_BASE = "http://localhost:8000/catalog"
 
